@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  api:
+    container_name: mu__owner_api
+    image: mu/owner-api:latest
+    restart: always
+    ports:
+      - 5001:5001
+    networks:
+      - mu_net
+
+networks:
+  mu_net:
+    driver: bridge
+    name: mu_net
