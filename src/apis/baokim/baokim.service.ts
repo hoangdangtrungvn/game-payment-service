@@ -3,7 +3,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { firstValueFrom } from 'rxjs'
 import {
+  CancelOrderRequest,
+  CancelOrderResponse,
   ErrorCode,
+  OrderDetailResponse,
   Response,
   SendOrderRequest,
   SendOrderResponse,
@@ -17,11 +20,19 @@ export class BaoKimService {
   ) {}
 
   async bpmList() {
-    return await this.get('/bpm/list')
+    return await this.get<object>('/bpm/list')
   }
 
   async sendOrder(form: SendOrderRequest) {
     return await this.post<SendOrderResponse>('/order/send', form)
+  }
+
+  async cancelOrder(form: CancelOrderRequest) {
+    return await this.post<CancelOrderResponse>('/order/cancel', form)
+  }
+
+  async orderDetail(query: { id: number; mrc_order_id: string }) {
+    return await this.get<OrderDetailResponse>('/order/detail', query)
   }
 
   async get<T>(uri: string, query: any = {}) {

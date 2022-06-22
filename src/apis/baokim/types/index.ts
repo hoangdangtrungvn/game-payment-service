@@ -1,6 +1,6 @@
 export type Response<T> = {
   code: number
-  message: { [key: string]: string[] }
+  message: any
   count: number
   data: T
 }
@@ -14,10 +14,6 @@ export type SendOrderRequest = {
   url_detail?: string
   lang?: 'vi' | 'en'
   bpm_id?: number
-  accept_bank?: 1 | 0
-  accept_cc?: 1 | 0
-  accept_qrpay?: 1 | 0
-  accept_e_wallet?: 1 | 0
   webhooks?: string
   customer_email?: string
   customer_phone?: string
@@ -26,8 +22,81 @@ export type SendOrderRequest = {
 }
 
 export type SendOrderResponse = {
-  order_id: string
+  order_id: number
+  redirect_url: string
   payment_url: string
+}
+
+export type OrderDetailResponse = {
+  id: number
+  user_id: number
+  mrc_order_id: string
+  txn_id: number
+  ref_no: string
+  total_amount: string
+  description: string
+  items: object
+  url_success: string
+  url_cancel: object
+  url_detail: string
+  stat: string
+  lang: string
+  bpm_id: number
+  type: number
+  accept_qrpay: number
+  accept_bank: number
+  accept_cc: number
+  accept_ib: number
+  accept_ewallet: number
+  accept_installments: number
+  order_id: number
+  email: string
+  name: string
+  webhooks: string
+  customer_name: string
+  customer_email: string
+  customer_phone: string
+  customer_address: string
+  created_at: string
+  updated_at: string
+}
+
+export type CancelOrderRequest = {
+  id: number
+}
+
+export type CancelOrderResponse = {
+  id: number
+  user_id: number
+  mrc_order_id: string
+  txn_id: number
+  ref_no: string
+  total_amount: string
+  description: string
+  items: object
+  url_success: string
+  url_cancel: object
+  url_detail: string
+  stat: string
+  lang: string
+  bpm_id: number
+  type: number
+  accept_qrpay: number
+  accept_bank: number
+  accept_cc: number
+  accept_ib: number
+  accept_ewallet: number
+  accept_installments: number
+  order_id: number
+  email: string
+  name: string
+  webhooks: string
+  customer_name: string
+  customer_email: string
+  customer_phone: string
+  customer_address: string
+  created_at: string
+  updated_at: string
 }
 
 export enum ErrorCode {
