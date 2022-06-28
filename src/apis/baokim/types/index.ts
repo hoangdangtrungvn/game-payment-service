@@ -10,7 +10,7 @@ export type SendOrderRequest = {
   total_amount: number
   description: string
   url_success?: string
-  merchant_id?: number
+  merchant_id: number
   url_detail?: string
   lang?: 'vi' | 'en'
   bpm_id?: number
