@@ -1,0 +1,76 @@
+import { CardType } from '../enums/card-type.enum'
+import { PriceGuest } from '../enums/price-guest.enum'
+
+export type CardChargingRequest = {
+  merchant_id: number
+  pin: string
+  seri: string
+  card_type: CardType
+  price_guest: PriceGuest
+  note: string
+}
+
+export enum ErrorCode {
+  'Nạp thẻ thành công' = 0,
+  'Sai thông tin tài khoản.' = 2,
+  'Mã thẻ cào hoặc seri không chính xác' = 3,
+  'Thẻ đã sử dụng' = 4,
+  'Bạn phải nhập seri thẻ' = 5,
+  'Thẻ đã gửi sang hệ thống nhưng bị trễ. Liên hệ Admin' = 6,
+  'Hệ thống nạp thẻ đang bảo trì, nạp lại sau ít phút' = 7,
+  'Có lỗi xảy ra trong quá trình nạp thẻ. Liên hệ Admin.' = 8,
+  'Thẻ không sử dụng được' = 9,
+  'Nhập sai định dạng thẻ' = 10,
+  'Nhập sai quá 3 lần, nạp lại sau 30s.' = 11,
+  'Lỗi hệ thống. Liên hệ Admin' = 12,
+  'IP không được phép truy cập sau 5 phút' = 13,
+  'Tên đăng nhập không đúng' = 14,
+  'Loại thẻ không đúng' = 15,
+  'Mã thẻ viettel phải có 13 chữ số' = 16,
+  'Seri viettel phải có 11 chữ số' = 17,
+  'Mã thẻ mobiphone phải có 12 hoặc 14 số' = 18,
+  'Seri mobiphone phải là 1 dãy số' = 19,
+  'Mã thẻ vinaphone phải có 12 hoặc 14 số' = 20,
+  'Mã thẻ gate có 10 số và seri có 10 ký tự gồm chữ và số' = 21,
+  'Thẻ đã nạp sang hệ thống, không nạp nữa' = 22,
+  'Chưa nhận được kết quả trả về từ nhà cung cấp mã thẻ' = 24,
+  'Dữ liệu truyền vào không đúng' = 25,
+  'Nhà cung cấp không tồn tại' = 26,
+  'Hệ thống không phản hồi, nạp lại sau ít phút.' = 30,
+  'Trùng giao dịch, nạp lại sau ít phút' = 32,
+  'Seri hoặc mã thẻ không đúng' = 33,
+  'Mã thẻ và Mã seri phải có 12 ký tự gồm chữ và số' = 35,
+  'IP hiện tại không thuộc sở hữu hoặc trong danh sách cho phép của bạn' = 37,
+  'Thẻ đang bảo trì, nạp lại sau ít phút!' = 39,
+  'Tài khoản của bạn đang bị khóa!' = 40,
+  'Mã thẻ Bit phải có 9 số và seri có 10 ký tự gồm chữ và số' = 41,
+  'Mã thẻ Vcoin phải có 12 ký tự và seri có 12 ký tự' = 42,
+  'Mã thẻ VNM phải có 12 số và seri có 11 số' = 43,
+  'Mã thẻ Zing phải có 9 ký tự và seri có 12 ký tự' = 44,
+  'Mã thẻ Megacard phải có 12 ký tự và seri có 12 ký tự' = 45,
+  'Mã thẻ Oncash phải có 12 ký tự và seri có từ 10 đến 12 ký tự' = 46,
+  'Ip address bị khóa nạp thẻ' = 47,
+  'Thẻ trễ nạp thất bại' = 48,
+  'Thẻ trễ nạp thành công' = 49,
+  'Thẻ không được cộng tiền do khai báo sai seri, mệnh giá' = 50,
+  'Hiện tại không nhận mệnh giá này, vui lòng nạp lại sau' = 51,
+  'Vui lòng thực hiện lại thao tác' = 52,
+  'Thẻ đã nạp sang hệ thống, vui lòng không nạp lại' = 53,
+  'Card đã sử dụng' = -1,
+  'Thẻ đã bị khóa' = -2,
+  'Thẻ hết hạn sử dụng' = -3,
+  'Thẻ chưa kích hoạt' = -4,
+  'Giao dịch không hợp lệ' = -5,
+  'Mã thẻ và số Serial không khớp' = -6,
+  'Cảnh báo số lần giao dịch lỗi của một tài khoản' = -8,
+  'Thẻ thử quá số lần cho phép' = -9,
+  'Mã seri không hợp lệ' = -10,
+  'Mã thẻ không hợp lệ' = -11,
+  'Thẻ không tồn tại hoặc đã sử dụng' = -12,
+  'Mệnh giá thẻ không đúng.' = -13,
+  'Chưa chọn mệnh giá thẻ' = -14,
+  'Hiện tại chỉ chấp nhận thẻ Viettel 10,20,30,50,100,200,300,500' = -15,
+  'Hiện tại chỉ chấp nhận thẻ Vinaphone 10,20,30,50,100,200,500' = -16,
+  'Giao dịch nghi vấn' = -100,
+  'Quá nhiều request đồng thời' = -101,
+}
