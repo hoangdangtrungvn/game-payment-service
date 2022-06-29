@@ -27,11 +27,11 @@ export class TransformInterceptor<T>
         context
           .switchToHttp()
           .getResponse()
-          .status(data.status ?? 200)
+          .status(data?.status ?? 200)
         return {
           success: true,
-          message: data.message,
-          data: data.data ?? data,
+          message: data?.message,
+          data: data?.data ?? data,
           status: context.switchToHttp().getResponse().statusCode,
         }
       }),
