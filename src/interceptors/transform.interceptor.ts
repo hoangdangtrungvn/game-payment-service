@@ -28,6 +28,11 @@ export class TransformInterceptor<T>
           .switchToHttp()
           .getResponse()
           .status(data?.status ?? 200)
+
+        if ('err_code' in data) {
+          return data
+        }
+
         return {
           success: true,
           message: data?.message,
