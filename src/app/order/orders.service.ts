@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaoKimService } from '@/apis/baokim/baokim.service'
@@ -12,6 +11,9 @@ import { OrderStatus } from '@/enums/order-status.enum'
 import { GameBankService } from '@/apis/gamebank/gamebank.service'
 import { SendOrderRequest } from '@/apis/baokim/types'
 import { CardChargingRequest } from '@/apis/gamebank/types'
+import { firstValueFrom } from 'rxjs'
+import { HttpService } from '@nestjs/axios'
+import * as crypto from 'crypto'
 
 @Injectable()
 export class OrdersService {
@@ -20,6 +22,7 @@ export class OrdersService {
     private readonly orderRepository: Repository<Order>,
     private readonly baokimService: BaoKimService,
     private readonly gameBankService: GameBankService,
+    private readonly httpService: HttpService,
   ) {}
 
   async create(body: CreateOrderDto) {
@@ -35,12 +38,10 @@ export class OrdersService {
 
     // Send to payment gateway
     try {
-      // Send to BaoKim
       if (body.payload.paygate === PaymentGate.BAOKIM) {
         return await this.sendBaoKim(order, order.payload as BaoKimPayloadDto)
       }
 
-      // Send to GameBank
       if (body.payload.paygate === PaymentGate.GAMEBANK) {
         return await this.sendGameBank(
           order,
@@ -48,12 +49,11 @@ export class OrdersService {
         )
       }
     } catch (error) {
-      // Set order status to failed
       this.orderRepository.update(order.id, {
         status: OrderStatus.FAILED,
       })
       throw new HttpException(
-        { message: error.response.message, error: error.response.error },
+        { message: error.response?.message, error: error.response?.error },
         HttpStatus.BAD_REQUEST,
       )
     }
@@ -71,14 +71,39 @@ export class OrdersService {
   }
 
   async sendGameBank(order: Order, payload: GameBankPayloadDto) {
+    // Call GameBank API
     const form: CardChargingRequest = {
       merchant_id: +process.env.GAMEBANK_API_MERCHANT_ID,
       pin: payload.pin,
       seri: payload.seri,
       card_type: payload.card_type,
       price_guest: payload.price_guest,
-      note: payload.note,
+      note: order.id.toString(),
     }
-    return await this.gameBankService.cardCharging(form)
+    const resp = await this.gameBankService.cardCharging(form)
+
+    // Callback to game service
+    const data = {
+      user_id: order.user_id,
+      game_id: order.game_id,
+      ...payload,
+    }
+    const sign = await this.hashData(data)
+    await firstValueFrom(
+      this.httpService.post(payload.callback_url, { ...data, sign }),
+    )
+
+    // Set order status to success
+    await this.orderRepository.update(order.id, {
+      status: OrderStatus.SUCCESS,
+    })
+
+    return resp
+  }
+
+  async hashData(data: Record<string, any>) {
+    const hmac = crypto.createHmac('sha256', process.env.SECRET_TOKEN)
+    hmac.update(JSON.stringify(data))
+    return hmac.digest('hex')
   }
 }
