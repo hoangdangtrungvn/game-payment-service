@@ -80,25 +80,39 @@ export class OrdersService {
       price_guest: payload.price_guest,
       note: order.id.toString(),
     }
-    const resp = await this.gameBankService.cardCharging(form)
+    await this.gameBankService.cardCharging(form)
+
+    // Set order status to paygate success
+    await this.orderRepository.update(order.id, {
+      status: OrderStatus.PAYGATE,
+    })
 
     // Callback to game service
     const data = {
       user_id: order.user_id,
       game_id: order.game_id,
-      ...payload,
+      payload,
     }
     const sign = await this.hashData(data)
-    await firstValueFrom(
+    const resp = await firstValueFrom(
       this.httpService.post(payload.callback_url, { ...data, sign }),
     )
 
-    // Set order status to success
+    if (resp.data.err_code !== 0) {
+      throw new HttpException(
+        { message: resp.data.message, error: resp.data.err_code },
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
+    // Set order status to success completed
     await this.orderRepository.update(order.id, {
       status: OrderStatus.SUCCESS,
     })
 
-    return resp
+    return {
+      message: 'Recharge successfully',
+    }
   }
 
   async hashData(data: Record<string, any>) {
