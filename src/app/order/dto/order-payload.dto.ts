@@ -1,5 +1,5 @@
 import { PaymentGate } from '@/enums/payment-gate.enum'
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 export default class OrderPayloadDto {
   @IsString()
@@ -9,4 +9,7 @@ export default class OrderPayloadDto {
   @IsEnum(PaymentGate)
   @IsNotEmpty()
   paygate: PaymentGate
+
+  @IsOptional()
+  meta: any
 }

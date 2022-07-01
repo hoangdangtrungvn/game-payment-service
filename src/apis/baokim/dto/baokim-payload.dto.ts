@@ -19,7 +19,4 @@ export default class BaoKimPayloadDto extends OrderPayloadDto {
   @IsNumber()
   @IsOptional()
   bpm_id: number
-
-  @IsOptional()
-  meta: any
 }
