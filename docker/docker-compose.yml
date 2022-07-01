@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  game__payment_service:
+    container_name: game__payment_service
+    image: game/payment-service:latest
+    restart: always
+    ports:
+      - 6002:5001
