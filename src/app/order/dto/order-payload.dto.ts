@@ -1,8 +1,8 @@
 import { PaymentGate } from '@/enums/payment-gate.enum'
-import { IsEnum, IsNotEmpty, IsUrl } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
 
 export default class OrderPayloadDto {
-  @IsUrl({ require_tld: false })
+  @IsString()
   @IsNotEmpty()
   callback_url: string
 
