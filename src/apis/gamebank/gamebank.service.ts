@@ -1,5 +1,5 @@
 import AxiosDigestAuth from '@mhoc/axios-digest-auth/dist'
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { CardChargingRequest } from './types'
 
 @Injectable()
@@ -18,33 +18,17 @@ export class GameBankService {
       password: process.env.GAMEBANK_API_PASSWORD,
     })
 
-    const res = await auth
-      .request({
-        timeout: +process.env.HTTP_TIMEOUT,
-        maxRedirects: +process.env.HTTP_MAX_REDIRECTS,
-        method: 'POST',
-        url: process.env.GAMEBANK_API_URL,
-        data: data,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      })
-      .catch((e) => {
-        throw new HttpException(
-          { message: `GameBank: ${e.response.data.msg}` },
-          e.response.status,
-        )
-      })
+    const res = await auth.request({
+      timeout: +process.env.HTTP_TIMEOUT,
+      maxRedirects: +process.env.HTTP_MAX_REDIRECTS,
+      method: 'POST',
+      url: process.env.GAMEBANK_API_URL,
+      data: data,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
 
-    const { code, info_card, msg } = res.data
-
-    if (code == 0) {
-      return res.data
-    }
-
-    throw new HttpException(
-      { message: `GameBank: ${msg}` },
-      HttpStatus.BAD_REQUEST,
-    )
+    return res.data
   }
 }
