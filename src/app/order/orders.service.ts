@@ -80,9 +80,15 @@ export class OrdersService {
       price_guest: payload.price_guest,
       note: order.id.toString(),
     }
-    const gb = await this.gameBankService.cardCharging(form)
+    const gamebank = await this.gameBankService.cardCharging(form)
 
-    const { code, info_card, msg } = gb
+    // Set order status to paygate success
+    await this.orderRepository.update(order.id, {
+      status: OrderStatus.PAYGATE,
+      webhook: gamebank,
+    })
+
+    const { code, info_card, msg } = gamebank
 
     if (code != 0) {
       throw new HttpException(
@@ -91,11 +97,7 @@ export class OrdersService {
       )
     }
 
-    // Set order status to paygate success
-    await this.orderRepository.update(order.id, {
-      status: OrderStatus.PAYGATE,
-      webhook: gb,
-    })
+    payload.price_guest = info_card
 
     // Callback to game service
     const data = {
